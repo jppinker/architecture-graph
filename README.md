@@ -12,16 +12,16 @@ Architecture Graph analyzes supported Java/Spring, Kafka, and PostgreSQL relatio
 - Shows source evidence for discovered relationships.
 - Provides deterministic change-impact reports.
 
-> **MVP v0.1.0** — Linux x64, Node.js 22.x required.
+> **MVP v0.1.1** — Linux x64, Node.js 22.x required.
 > Currently supports a limited Java/Spring + Kafka + PostgreSQL subset.
 
 ## Download
 
-### [Download Architecture Graph v0.1.0](https://github.com/jppinker/architecture-graph/releases/tag/v0.1.0)
+### [Download Architecture Graph v0.1.1](https://github.com/jppinker/architecture-graph/releases/tag/v0.1.1)
 
 Download the file:
 
-`architecture-graph-mvp-0.1.0-linux-x64.tar.gz`
+`architecture-graph-mvp-0.1.1-linux-x64.tar.gz`
 
 **Important:** Download the release asset, not GitHub's automatically generated "Source code" archive.
 
@@ -29,13 +29,13 @@ Download the file:
 
 ### 1. Download and extract
 
-Download `architecture-graph-mvp-0.1.0-linux-x64.tar.gz` from the [latest release](https://github.com/jppinker/architecture-graph/releases/tag/v0.1.0).
+Download `architecture-graph-mvp-0.1.1-linux-x64.tar.gz` from the [latest release](https://github.com/jppinker/architecture-graph/releases/tag/v0.1.1).
 
 Open a terminal in your Downloads directory and run:
 
 ```bash
 mkdir architecture-graph
-tar -xzf architecture-graph-mvp-0.1.0-linux-x64.tar.gz -C architecture-graph
+tar -xzf architecture-graph-mvp-0.1.1-linux-x64.tar.gz -C architecture-graph
 cd architecture-graph/architecture-graph-mvp
 ```
 
