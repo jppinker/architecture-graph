@@ -27,14 +27,16 @@ Download the file:
 
 ## Quick Start
 
-### 1. Extract
+### 1. Download and extract
 
-Open a terminal in the directory containing the downloaded archive:
+Download `architecture-graph-mvp-0.1.0-linux-x64.tar.gz` from the [latest release](https://github.com/jppinker/architecture-graph/releases/tag/v0.1.0).
+
+Open a terminal in your Downloads directory and run:
 
 ```bash
 mkdir architecture-graph
 tar -xzf architecture-graph-mvp-0.1.0-linux-x64.tar.gz -C architecture-graph
-cd architecture-graph
+cd architecture-graph/architecture-graph-mvp
 ```
 
 ### 2. Check prerequisites
