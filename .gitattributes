@@ -1,0 +1,3 @@
+# Preserve upstream license texts and generated self-contained reports exactly.
+LICENSES/** -whitespace
+demo/** -whitespace
