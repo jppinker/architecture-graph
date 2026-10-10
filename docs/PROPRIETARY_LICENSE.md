@@ -8,8 +8,9 @@
 
 ## 1. Licensor and licensed software
 
-The licensor is **MENTORIX LLC (ООО «МЕНТОРИКС»), Russian Federation**
-(the **Licensor**).
+The licensor is **ООО «МЕНТОРИКС» (MENTORIX LLC)**, a legal entity of the
+Russian Federation, INN **9715521135**, OGRN **1257700586483** (the
+**Licensor**).
 
 These terms apply only to the original Architecture Graph files in the
 following release (the **Software**):
@@ -60,6 +61,9 @@ Evaluation Period to:
 The Software may be evaluated worldwide. No right is granted unless it is
 expressly stated in this Section. No fee, royalty, or other remuneration is
 payable for the rights granted under this License.
+
+This limited grant is intended for public MVP and accelerator evaluation, not
+commercial sale or production deployment.
 
 ## 4. Evaluation Period
 
@@ -192,9 +196,9 @@ Russian legal counsel must:
 
 1. verify and approve the Licensor's authority and chain of title for all files
    described as original Architecture Graph software;
-2. confirm the Licensor's full legal identity and add its OGRN, INN, registered
-   address, and a valid legal-notice email or other notice channel—none of
-   these details has been provided or verified in this draft;
+2. confirm the supplied INN and OGRN and determine whether the Licensor's
+   registered address and a valid legal-notice email or other notice channel
+   must be added—no address or notice contact has been provided in this draft;
 3. approve the worldwide, free, nonexclusive 90-day grant and the specific
    permitted and prohibited methods of use;
 4. confirm that the electronic presentation and first-use acceptance flow in
@@ -206,5 +210,6 @@ Russian legal counsel must:
    required; and
 7. confirm the Publication Date when authorizing release-page publication.
 
-The known company details used in this draft are limited to: **MENTORIX LLC;
-ООО «МЕНТОРИКС»; Russian Federation**.
+The company details supplied for this draft are limited to: **ООО «МЕНТОРИКС»
+(MENTORIX LLC); INN 9715521135; OGRN 1257700586483; Russian Federation**. No
+registered address or legal-notice contact has been supplied.

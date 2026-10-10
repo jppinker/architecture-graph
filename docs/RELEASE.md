@@ -22,7 +22,7 @@ The separately distributed archive necessarily contains inspectable bundled Java
 
 ## Licensing
 
-Third-party packages retain their upstream licenses and notices under [`LICENSES/`](../LICENSES/). The package notice grants no additional license for the original Architecture Graph files. Proposed Architecture Graph evaluation and distribution terms are available as an owner-approval draft in [`PROPRIETARY_TERMS_DRAFT.md`](PROPRIETARY_TERMS_DRAFT.md).
+Third-party packages retain their upstream licenses and notices under [`LICENSES/`](../LICENSES/). The package notice grants no additional license for the original Architecture Graph files. The Architecture Graph proprietary evaluation license prepared for owner approval is available in [`PROPRIETARY_LICENSE.md`](PROPRIETARY_LICENSE.md).
 
 The draft identifies the licensed subject as the exact `v0.2.0-rc2` Linux
 x86-64 archive and provides a free, worldwide, nonexclusive evaluation license
@@ -69,9 +69,10 @@ territory, a 90-day term, free consideration, and a simple (nonexclusive)
 license. It also defines electronic presentation and the act that constitutes
 acceptance. This is a documentation consistency review, not a legal opinion.
 
-MENTORIX LLC (ООО «МЕНТОРИКС») must not approve publication until qualified
-Russian legal counsel has confirmed those provisions and the complete draft.
-The owner's OGRN, INN, registered address, and legal-notice contact have not
-been supplied or verified. Ownership and authority to license the original
-Software have also not been verified. The liability language contains no
-monetary cap and requires specific owner/legal approval.
+ООО «МЕНТОРИКС» (MENTORIX LLC), INN 9715521135, OGRN 1257700586483, must not
+approve publication until qualified Russian legal counsel has confirmed those
+provisions, the supplied company identifiers, and the complete license. A
+registered address and legal-notice contact have not been supplied. Ownership
+and authority to license the original Software have also not been verified.
+The liability language contains no monetary cap and requires specific
+owner/legal approval.

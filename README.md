@@ -20,7 +20,7 @@ _Complete stored graph from the bundled `orders` and `billing` demo: 10 facts an
 ## Download and quick start
 
 > **Evaluation license:** Before downloading or using this release, review the
-> [Architecture Graph Proprietary Evaluation License](docs/PROPRIETARY_TERMS_DRAFT.md).
+> [Architecture Graph Proprietary Evaluation License](docs/PROPRIETARY_LICENSE.md).
 > Installing or executing the software constitutes acceptance of those terms
 > and starts the evaluating organization's 90-day period. The license permits
 > worldwide internal evaluation, testing, and internal demonstrations only;
@@ -87,7 +87,7 @@ Graph reachability means review relevance, not guaranteed runtime breakage. Unsu
 Analysis reads local repositories without modifying them. It makes no network or model calls and uploads nothing. Reports use repository-relative paths, withhold sensitive excerpts, HTML-escape values, and use a content security policy that blocks remote resources.
 
 - [Release identity and distribution boundary](docs/RELEASE.md)
-- [Architecture Graph Proprietary Evaluation License](docs/PROPRIETARY_TERMS_DRAFT.md)
+- [Architecture Graph Proprietary Evaluation License](docs/PROPRIETARY_LICENSE.md)
 - [Runtime dependency notices](LICENSES/THIRD_PARTY_NOTICES.md)
 - [Product notice](LICENSES/NOTICE.md)
 - [v0.1.1 historical release](https://github.com/jppinker/architecture-graph/releases/tag/v0.1.1)
