@@ -4,6 +4,12 @@
 
 **AI-agents produce a lot of code at a fast pace, we need to monitor their impact on the codebase to reduce unwanted consequences.**
 
+### [Try the Interactive Demo](https://jppinker.github.io/architecture-graph/)
+
+Explore the architecture graph directly in your browser. No installation required.
+
+**[Try Interactive Demo](https://jppinker.github.io/architecture-graph/) · [Download v0.2.0-rc2](https://github.com/jppinker/architecture-graph/releases/tag/v0.2.0-rc2)**
+
 Architecture Graph discovers evidence-backed relationships in one or more repositories, renders them as an interactive graph, and shows the supported review impact of a file change. Analysis is local and deterministic: no LLM calls, API keys, source uploads, or application startup.
 
 Architecture Graph is proprietary software. The product source is not published in this repository. The distributed archive contains bundled JavaScript that remains inspectable; that visibility is not an open-source license or a claim that the implementation is secret.
