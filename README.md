@@ -2,7 +2,7 @@
 
 **Understand your architecture. Before you change it.**
 
-**AI-agents produce a lot of code at a fast pace, we need to monitor their influence of codebase to reduce the unwanted influence on codebase.**
+**AI-agents produce a lot of code at a fast pace, we need to monitor their impact on the codebase to reduce unwanted consequences.**
 
 Architecture Graph discovers evidence-backed relationships in one or more repositories, renders them as an interactive graph, and shows the supported review impact of a file change. Analysis is local and deterministic: no LLM calls, API keys, source uploads, or application startup.
 
