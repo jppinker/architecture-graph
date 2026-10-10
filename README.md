@@ -4,7 +4,7 @@
 
 **AI-agents produce a lot of code at a fast pace, we need to monitor their influence of codebase to reduce the unwanted influence on codebase.**
 
-Architecture Graph discovers evidence-backed relationships in one or more repositories, renders them as an interactive Obsidian-style graph, and shows the supported review impact of a file change. Analysis is local and deterministic: no LLM calls, API keys, source uploads, or application startup.
+Architecture Graph discovers evidence-backed relationships in one or more repositories, renders them as an interactive graph, and shows the supported review impact of a file change. Analysis is local and deterministic: no LLM calls, API keys, source uploads, or application startup.
 
 Architecture Graph is proprietary software. The product source is not published in this repository. The distributed archive contains bundled JavaScript that remains inspectable; that visibility is not an open-source license or a claim that the implementation is secret.
 
