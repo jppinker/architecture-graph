@@ -19,6 +19,14 @@ _Complete stored graph from the bundled `orders` and `billing` demo: 10 facts an
 
 ## Download and quick start
 
+> **Evaluation license:** Before downloading or using this release, review the
+> [Architecture Graph Proprietary Evaluation License](docs/PROPRIETARY_TERMS_DRAFT.md).
+> Installing or executing the software constitutes acceptance of those terms
+> and starts the evaluating organization's 90-day period. The license permits
+> worldwide internal evaluation, testing, and internal demonstrations only;
+> production use, commercial use, external redistribution, sublicensing, and
+> modification are not licensed except where applicable law requires otherwise.
+
 Download `architecture-graph-mvp-0.2.0-rc2-linux-x64.tar.gz` from the [v0.2.0-rc2 release page](https://github.com/jppinker/architecture-graph/releases/tag/v0.2.0-rc2). Download the release asset, not GitHub's automatically generated source archive.
 
 ```sh
@@ -79,13 +87,13 @@ Graph reachability means review relevance, not guaranteed runtime breakage. Unsu
 Analysis reads local repositories without modifying them. It makes no network or model calls and uploads nothing. Reports use repository-relative paths, withhold sensitive excerpts, HTML-escape values, and use a content security policy that blocks remote resources.
 
 - [Release identity and distribution boundary](docs/RELEASE.md)
-- [Draft proprietary evaluation terms](docs/PROPRIETARY_TERMS_DRAFT.md)
+- [Architecture Graph Proprietary Evaluation License](docs/PROPRIETARY_TERMS_DRAFT.md)
 - [Runtime dependency notices](LICENSES/THIRD_PARTY_NOTICES.md)
 - [Product notice](LICENSES/NOTICE.md)
 - [v0.1.1 historical release](https://github.com/jppinker/architecture-graph/releases/tag/v0.1.1)
 - [Issues and feedback](https://github.com/jppinker/architecture-graph/issues)
 
-The rc2 archive includes the required third-party license texts. The same notices are retained under [`LICENSES/`](LICENSES/) in this repository. The proposed proprietary terms are a draft for owner approval and are not effective until the owner publishes or otherwise accepts them. Repository visibility and inspectable bundled JavaScript do not grant open-source rights.
+The rc2 archive includes the required third-party license texts. The same notices are retained under [`LICENSES/`](LICENSES/) in this repository. The proprietary evaluation license is a publish-ready draft requiring the approvals listed in its Section 15; it is not effective until MENTORIX LLC publishes it with the release. Repository visibility and inspectable bundled JavaScript do not grant open-source rights. Third-party licenses remain unaffected.
 
 ## Integrity
 
