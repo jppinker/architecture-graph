@@ -2,20 +2,22 @@
 
 **Understand your architecture. Before you change it.**
 
+**AI-agents produce a lot of code at a fast pace, we need to monitor their influence of codebase to reduce the unwanted influence on codebase.**
+
 Architecture Graph discovers evidence-backed relationships in one or more repositories, renders them as an interactive Obsidian-style graph, and shows the supported review impact of a file change. Analysis is local and deterministic: no LLM calls, API keys, source uploads, or application startup.
 
-Architecture Graph is proprietary software offered for evaluation. The product source is not published in this repository. The distributed archive contains bundled JavaScript that remains inspectable; that visibility is not an open-source license or a claim that the implementation is secret.
+Architecture Graph is proprietary software. The product source is not published in this repository. The distributed archive contains bundled JavaScript that remains inspectable; that visibility is not an open-source license or a claim that the implementation is secret.
 
 ![PetClinic OwnerRepository impact visualization](docs/images/petclinic-ownerrepository-impact.png)
 
-_Recommended hero: Spring PetClinic `OwnerRepository` selected with its frozen five-item change-impact result. Every highlighted path is backed by stored source evidence._
+_Spring PetClinic `OwnerRepository` selected with its frozen five-item change-impact result. Every highlighted path is backed by stored source evidence._
 
 > **v0.2.0-rc2 release candidate** · Linux x86-64 · Node.js 22.x
 > Independently accepted in a clean room: 36/36 gates passed. Unsupported and unresolved patterns remain visible; a missing edge never means a change is safe.
 
 ![Original multi-repository architecture overview](docs/images/multi-repository-architecture-overview.png)
 
-_Complete stored graph from the bundled `orders` and `billing` demo: 10 facts and 7 evidence-backed relationships across two repositories. Coverage is partial and the unresolved site remains disclosed._
+_Complete stored graph from the bundled `orders` and `billing` demo: 10 facts and 7 evidence-backed relationships across two repositories._
 
 ## Download and quick start
 
