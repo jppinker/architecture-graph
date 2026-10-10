@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'none'; script-src 'sha256-vNg/DjHrF1AmqBHbbcHyS0MmAA7f+kAqENB0jFvlV7Q=' 'sha256-9aTtliNVF9nmTJlIvKZi+N62BDgA8Ix13teldSQZWfg='; form-action 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'none'; script-src 'sha256-vNg/DjHrF1AmqBHbbcHyS0MmAA7f+kAqENB0jFvlV7Q=' 'sha256-uR27CozhtwcBQ1xv3VL3XBxrWjvtEztKguaYCT41Q3g='; form-action 'none'; base-uri 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>archgraph analysis report (0.2.0-dev)</title>
@@ -156,6 +156,18 @@ footer { margin-top: 3rem; color: var(--muted); font-size: 13px; border-top: 1px
   .agv-search { min-width: 0; flex: 1 1 100%; }
 }
 @media print { .agv-toolbar, .agv-hint, .agv-tip, .agv-detail, .agv-filters, .agv-guide { display: none; } }
+
+/* Post-rc2 AI-agent clipboard extension. */
+.agv-copy-row { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem .6rem; margin: .3rem 1.6rem .55rem 0; }
+.agv-copy { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid #c084fc; border-radius: 7px; padding: .52rem .78rem; color: #fff; background: linear-gradient(135deg, #8b5cf6, #c026d3); box-shadow: 0 0 0 1px rgba(192,132,252,.16), 0 5px 18px rgba(139,92,246,.28); font: 700 12.5px/1 inherit; font-family: inherit; cursor: pointer; }
+.agv-copy:hover { background: linear-gradient(135deg, #9f67ff, #d12ee3); }
+.agv-copy:active { transform: translateY(1px); }
+.agv-copy:disabled { cursor: wait; opacity: .8; }
+.agv-copy:focus-visible { outline: 3px solid #f0abfc; outline-offset: 2px; }
+.agv-copy-icon { font-size: 11px; }
+.agv-copy-status { min-height: 1em; color: #c4b5fd; font-size: 11.5px; }
+.agv-copy-status.error { color: #fca5a5; }
+
 </style>
 </head>
 <body>
@@ -634,6 +646,117 @@ var Xr=function(e){if(!(this instanceof Xr))return new Xr(e);this.id="Thenable/1
       }
       return list;
     };
+
+    const AI_CONTEXT_NOTE = "Architecture Graph provides partial, evidence-backed architectural context.\nVerify source before changing code.\nImpact indicates review relevance, not guaranteed breakage or safety.";
+    const md = (value) => String(value ?? '').replace(/[\r\n\t]+/g, ' ').replace(/\\/g, '\\\\').replace(/\x60/g, '\\x60');
+    const mdCode = (value) => '\x60' + String(value ?? '').replace(/\x60/g, '\\x60') + '\x60';
+    const evidenceMarkdown = (refs) => {
+      if (!refs.length) return ['- No stored evidence reference.'];
+      return refs.map((ref) => {
+        const row = view.evidence[ref.id];
+        if (!row) return '- Missing stored evidence record: ' + mdCode(ref.id);
+        const span = row.start_line ? ':' + row.start_line + (row.end_line && row.end_line !== row.start_line ? '-' + row.end_line : '') : '';
+        return '- ' + mdCode(row.repository + ':' + row.path + span) + ' — rule ' + mdCode(row.rule) + '; evidence ' + mdCode(ref.id) + (row.anchor !== null ? ' (report E' + row.anchor + ')' : '') + '. Source excerpt omitted from clipboard context; inspect the stored report/source.';
+      });
+    };
+    const relationMarkdown = (edge, direction) => {
+      const other = direction === 'out' ? edge.target : edge.source;
+      const arrow = direction === 'out' ? 'selected → ' + edge.relation + ' → ' + nameOf(other) : nameOf(other) + ' → ' + edge.relation + ' → selected';
+      return ['- ' + md(arrow) + ' (' + edge.semantics.replace('_', ' ') + '; ' + mdCode(edge.id) + ')',
+        ...evidenceMarkdown(edge.evidence).map((line) => '  ' + line)];
+    };
+    const componentMarkdown = (node, outgoing, incoming, unconfirmed, limits) => {
+      const confirmedOut = outgoing.filter((edge) => edge.semantics !== 'not_confirmed');
+      const confirmedIn = incoming.filter((edge) => edge.semantics !== 'not_confirmed');
+      return [
+        '# Architecture Graph context — component', '',
+        '## Component',
+        '- Name: ' + md(node.label),
+        ...(node.title !== node.label ? ['- Qualified name: ' + md(node.title)] : []),
+        '- Type: ' + md(titleOf(node.category, node.category) + ' / ' + node.tag),
+        '- Canonical identity: ' + mdCode(node.id),
+        '- Repository: ' + md(node.repository || 'shared resource (no repository)'),
+        '- Source file: ' + (node.path ? mdCode(node.path) : 'not available'),
+        '- Fact status: ' + md(node.status === 'confirmed' ? 'confirmed' : 'not confirmed'), '',
+        '## Confirmed dependencies (outgoing)',
+        ...(confirmedOut.length ? confirmedOut.flatMap((edge) => relationMarkdown(edge, 'out')) : ['- None proven in the supported graph.']), '',
+        '## Confirmed dependents (incoming)',
+        ...(confirmedIn.length ? confirmedIn.flatMap((edge) => relationMarkdown(edge, 'in')) : ['- None proven in the supported graph.']), '',
+        '## Source evidence and line references',
+        ...evidenceMarkdown(node.evidence), '',
+        '## Unresolved and unsupported limitations',
+        ...(limits.length ? limits.map((text) => '- ' + md(text)) : ['- No component-specific limitation was recorded.']),
+        ...(unconfirmed.length ? ['- Not-confirmed relationships:', ...unconfirmed.flatMap((edge) => relationMarkdown(edge, edge.source === node.id ? 'out' : 'in'))] : []),
+        '- Analysis coverage: ' + md(view.coverage.status) + '; unsupported ' + view.coverage.unsupported + ', unresolved ' + view.coverage.unresolved + ', ambiguous ' + view.coverage.ambiguous + '; truncated ' + (view.coverage.truncated ? 'yes' : 'no') + '.', '',
+        '## Use note', AI_CONTEXT_NOTE, ''
+      ].join('\n');
+    };
+    const impactMarkdown = (node, entry) => {
+      const direct = entry.items.filter((item) => item.classification === 'direct');
+      const possible = entry.items.filter((item) => item.classification === 'possible');
+      const itemLines = (items) => items.length ? items.flatMap((item) => {
+        const path = [nameOf(item.path[0]), ...item.path_edges.flatMap((edge, index) => [edge.source_id === item.path[index] ? ' —' + edge.relation + '→ ' : ' ←' + edge.relation + '— ', nameOf(item.path[index + 1])])].join('');
+        const pathEvidence = new Set(item.path_edges.flatMap((edge) => edgeById.get(edge.id)?.evidence.map((ref) => ref.id) ?? []));
+        const remainingEvidence = item.evidence_refs.filter((id) => !pathEvidence.has(id));
+        return ['- Rank ' + item.rank + ': ' + md(nameOf(item.entity_id)) + ' — ' + md(item.ordering_class) + ', ' + item.minimum_hop + ' hop' + (item.minimum_hop === 1 ? '' : 's') + '.', '  - Evidence-backed path: ' + md(path), ...item.path_edges.flatMap((edge) => {
+          const stored = edgeById.get(edge.id);
+          return ['  - Relationship: ' + md(edge.source_id + ' → ' + edge.relation + ' → ' + edge.target_id) + ' (' + mdCode(edge.id) + ')', ...evidenceMarkdown(stored ? stored.evidence : []).map((line) => '  ' + line)];
+        }), ...(remainingEvidence.length ? evidenceMarkdown(remainingEvidence.map((id) => ({ id }))).map((line) => '  ' + line) : [])];
+      }) : ['- None returned by the supported impact analysis.'];
+      return [
+        '# Architecture Graph context — potential impact', '',
+        '## Selected change',
+        '- Component: ' + md(node.label),
+        ...(node.title !== node.label ? ['- Qualified name: ' + md(node.title)] : []),
+        '- Canonical identity: ' + mdCode(node.id),
+        '- Repository: ' + md(node.repository || 'shared resource (no repository)'),
+        '- Source file: ' + (node.path ? mdCode(node.path) : 'not available'),
+        '- Selector: ' + mdCode(entry.selector),
+        '- Change intent: ' + md(entry.intent), '',
+        '## Anchors',
+        ...(entry.anchors.resolved.length ? entry.anchors.resolved.map((id) => '- Resolved: ' + md(nameOf(id)) + ' (' + mdCode(id) + ')') : entry.anchors.unresolved.map((value) => '- Unresolved: ' + md(value))), '',
+        '## Direct review targets', ...itemLines(direct), '',
+        '## Possible review targets', ...itemLines(possible), '',
+        '## Support, coverage, truncation, and uncertainty',
+        '- Support: ' + md(entry.status.support) + ' (Layer-R ' + md(entry.status.layer_r_support) + '; coverage ' + md(entry.status.coverage) + ').',
+        '- Truncated: ' + (entry.status.truncated ? 'yes — the review region is at least as large as shown.' : 'no.'),
+        '- Traversal policy: ' + md(view.impact.policy),
+        '- Ranked items: ' + entry.items.length + ' total; ' + direct.length + ' direct; ' + possible.length + ' possible.',
+        '- Context-only and not-confirmed relationships are not impact paths. Unsupported or unresolved patterns can hide dependencies.', '',
+        '## Use note', AI_CONTEXT_NOTE, ''
+      ].join('\n');
+    };
+    const copyText = async (text) => {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        try { await navigator.clipboard.writeText(text); return; } catch { /* file:// and browser policy may require the fallback */ }
+      }
+      const area = document.createElement('textarea');
+      area.value = text; area.setAttribute('readonly', ''); area.setAttribute('aria-hidden', 'true');
+      area.style.position = 'fixed'; area.style.opacity = '0'; area.style.pointerEvents = 'none';
+      document.body.append(area); area.focus(); area.select();
+      let copied = false;
+      try { copied = typeof document.execCommand === 'function' && document.execCommand('copy'); } finally { area.remove(); }
+      if (!copied) throw new Error('Clipboard access was denied by the browser.');
+    };
+    const copyButton = (buildText) => {
+      const wrap = el('div', '', 'agv-copy-row');
+      const button = /** @type {HTMLButtonElement} */ (el('button', '', 'agv-copy')); button.type = 'button'; button.dataset.agv = 'copy-ai';
+      const icon = el('span', '▣', 'agv-copy-icon'); icon.setAttribute('aria-hidden', 'true');
+      const label = el('span', 'Copy for AI-agent'); button.append(icon, label);
+      const status = el('span', '', 'agv-copy-status'); status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+      let timer = 0;
+      button.addEventListener('click', async () => {
+        window.clearTimeout(timer); button.disabled = true; status.classList.remove('error'); status.textContent = 'Copying…';
+        try {
+          await copyText(buildText()); label.textContent = '✓ Copied!'; status.textContent = 'AI-agent context copied to the clipboard.';
+          timer = window.setTimeout(() => { label.textContent = 'Copy for AI-agent'; status.textContent = ''; }, 1800);
+        } catch (error) {
+          label.textContent = 'Copy for AI-agent'; status.classList.add('error'); status.textContent = 'Copy failed: ' + (error instanceof Error ? error.message : String(error));
+        } finally { button.disabled = false; }
+      });
+      wrap.append(button, status); return wrap;
+    };
+
     const facts = (/** @type {[string, string|null][]} */ pairs) => {
       const dl = document.createElement('dl');
       for (const [key, value] of pairs) if (value) dl.append(el('dt', key), el('dd', value));
@@ -697,7 +820,7 @@ var Xr=function(e){if(!(this instanceof Xr))return new Xr(e);this.id="Thenable/1
       const outTitle = el('h4', `Outgoing — direct dependencies (${confirmedOut.length})`, 'agv-out');
       const inTitle = el('h4', `Incoming — direct dependents (${confirmedIn.length})`, 'agv-in');
       panel([
-        el('h3', node.title), el('p', `${titleOf(node.category, node.category)} · ${node.tag}`, 'agv-kind'),
+        el('h3', node.title), copyButton(() => componentMarkdown(node, outgoing, incoming, unconfirmed, limits)), el('p', `${titleOf(node.category, node.category)} · ${node.tag}`, 'agv-kind'),
         facts([['Repository', node.repository || 'shared resource (no repository)'], ['File', node.path], ['Status', node.status === 'confirmed' ? 'confirmed fact' : 'not confirmed'], ['Note', node.detail], ['Canonical id', node.id]]),
         impactButton, el('p', node.impact ? `Frozen Layer-R result for ${node.impact} (intent ${view.impact.intent}).` : node.impact_note, node.impact ? 'agv-kind' : 'agv-kind warn'),
         outTitle, relationList(confirmedOut, 'out'), inTitle, relationList(confirmedIn, 'in'),
@@ -748,7 +871,7 @@ var Xr=function(e){if(!(this instanceof Xr))return new Xr(e);this.id="Thenable/1
       const exit = /** @type {HTMLButtonElement} */ (el('button', 'Back to relationships', 'agv-link')); exit.type = 'button';
       exit.addEventListener('click', () => { state.impact = null; render(); });
       const parts = [
-        el('h3', `Potential impact: ${node.title}`),
+        el('h3', `Potential impact: ${node.title}`), copyButton(() => impactMarkdown(node, entry)),
         el('p', `Frozen Layer-R result for archgraph impact --file ${entry.selector} --intent ${entry.intent}; nothing is computed in the browser.`, 'agv-kind'),
         facts([['Anchor(s)', [...anchors].map(nameOf).join(', ') || `UNRESOLVED: ${entry.anchors.unresolved.join(', ')}`],
           ['Review items', `${entry.items.length} (${entry.items.filter((/** @type {any} */ item) => item.classification === 'direct').length} direct, ${entry.items.filter((/** @type {any} */ item) => item.classification === 'possible').length} possible)`],
