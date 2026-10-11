@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Interactive, evidence-backed architecture graphs from three verified open-source repositories.">
+  <meta name="description" content="Interactive, evidence-backed architecture graphs from four verified open-source repositories.">
   <meta name="color-scheme" content="dark">
   <title>Architecture Graph — Interactive demo gallery</title>
   <link rel="icon" href="data:,">
@@ -20,7 +20,7 @@
   <main>
     <section class="shell hero">
       <p class="eyebrow">Evidence-backed architecture discovery</p>
-      <h1>Explore real dependencies across three technology stacks.</h1>
+      <h1>Explore real dependencies across four open-source systems.</h1>
       <p class="lede">Every confirmed relationship comes from the frozen Architecture Graph v0.3.0-rc2 analyzer and retains its source evidence, impact view, filters, and Copy for AI-agent workflow.</p>
     </section>
     <section class="shell gallery" aria-label="Interactive demos">
@@ -44,6 +44,13 @@
         <p>A polyglot example showing local Go package imports and one .NET project reference. Its five small components are shown honestly—not as a fabricated service topology.</p>
         <div class="metrics" aria-label="Online Boutique metrics"><span class="metric">13 nodes</span><span class="metric">10 confirmed dependencies</span><span class="metric">5 components</span></div>
         <a class="button" href="online-boutique/">Open interactive graph →</a>
+      </article>
+      <article class="card">
+        <span class="tag">Java / Spring · Kubernetes</span>
+        <h2>PetClinic — Java / Spring</h2>
+        <p>Spring controllers, repositories, JPA entities and HTTP endpoints, plus two Kubernetes Services, two Deployments and two verified selection declarations. The repository contains no Terraform files, so no Terraform nodes or relationships are shown.</p>
+        <div class="metrics" aria-label="PetClinic metrics"><span class="metric">37 nodes</span><span class="metric">6 confirmed dependencies</span><span class="metric">22 context-only relations</span><span class="metric">0 unsupported relationships</span><span class="metric">23 unsupported or unresolved sites (no edges)</span></div>
+        <a class="button" href="petclinic/">Open interactive graph →</a>
       </article>
     </section>
     <section class="shell coverage" aria-labelledby="coverage-title">
