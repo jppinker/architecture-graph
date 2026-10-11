@@ -98,7 +98,8 @@ Unsupported technology or unresolved evidence can hide relationships. Absence of
 
 Analysis reads local repositories without modifying or executing them. It makes no network or model calls and uploads nothing. Reports use repository-relative paths, HTML-escape untrusted values, and use a content security policy that blocks remote resources.
 
-- [v0.3.0-rc2 release identity and distribution boundary](docs/RELEASE.md)
+- [v0.3.0-rc2 release identity and distribution boundary](docs/RELEASE-v0.3.0-rc2.md)
+- [Historical v0.2.0-rc2 release identity and distribution boundary](docs/RELEASE.md)
 - [v0.3.0-rc2 public release notes](docs/RELEASE_NOTES-v0.3.0-rc2.md)
 - [v0.3.0-rc2 Proprietary Evaluation License draft](docs/PROPRIETARY_LICENSE-v0.3.0-rc2.md)
 - [Historical v0.2.0-rc2 license](docs/PROPRIETARY_LICENSE.md)
