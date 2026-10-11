@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'none'; script-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>archgraph analysis report</title>
+<style>
+:root { color-scheme: light dark; --fg: #1d232b; --muted: #5b6573; --bg: #f4f6f9; --surface: #ffffff; --panel: #f5f7fa; --line: #d9dee5;
+  --accent: #1f5fae; --ok: #1d7a3e; --warn: #9a5b00; --info: #2b5c8a; --direct: #8a2b2b; --possible: #5b5f66; }
+@media (prefers-color-scheme: dark) {
+  :root { --fg: #e4e8ee; --muted: #a3adba; --bg: #101419; --surface: #181d24; --panel: #1d232b; --line: #343c47;
+    --accent: #7fb0ec; --ok: #6cc28c; --warn: #e2a64a; --info: #8bb7e2; --direct: #e58f8f; --possible: #b9bec6; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 76rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+header { background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--accent); border-radius: 10px; padding: 1rem 1.15rem; box-shadow: 0 4px 16px rgba(20, 31, 45, .06); }
+.report-panel { background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--accent); border-radius: 10px; padding: .2rem 1rem 1rem; margin: 1.2rem 0; box-shadow: 0 4px 16px rgba(20, 31, 45, .05); }
+.report-panel h2 { margin-top: 1rem; }
+.panel-blue { border-top-color: #397dcc; } .panel-green { border-top-color: #2f8b57; } .panel-violet { border-top-color: #7859b6; }
+.panel-rose { border-top-color: #b45672; } .panel-amber { border-top-color: #c48222; } .panel-slate { border-top-color: #617082; }
+h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+h2 { font-size: 1.25rem; margin: 2.25rem 0 .75rem; padding-bottom: .3rem; border-bottom: 2px solid var(--line); }
+h3 { font-size: 1.05rem; margin: 1.5rem 0 .5rem; }
+small, .lede, .note { color: var(--muted); }
+a { color: var(--accent); }
+code, pre { font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+code { overflow-wrap: anywhere; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: .5rem .6rem; margin: .4rem 0 0; }
+pre.cmd { margin: .4rem 0; }
+nav ol { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; padding: 0; margin: .75rem 0 0; list-style: none; }
+.notice { background: var(--panel); border-left: 4px solid var(--info); padding: .6rem .8rem; margin: .75rem 0; }
+.notice.warn { border-left-color: var(--warn); }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; font-size: 14px; }
+th, td { border: 1px solid var(--line); padding: .35rem .5rem; text-align: left; vertical-align: top; }
+th { background: var(--panel); font-weight: 600; }
+tr:target { outline: 2px solid var(--accent); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: .6rem; padding: 0; list-style: none; }
+.tiles li { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: .6rem .75rem; }
+.tiles strong { font-size: 1.4rem; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; }
+dl.facts { display: grid; grid-template-columns: max-content 1fr; gap: .2rem 1rem; }
+dl.facts dt { color: var(--muted); }
+dl.facts dd { margin: 0; }
+.badge { display: inline-block; font-size: 12px; font-weight: 600; padding: .05rem .45rem; border-radius: 999px; border: 1px solid currentColor; vertical-align: middle; }
+.badge.ok { color: var(--ok); } .badge.warn { color: var(--warn); } .badge.info { color: var(--info); }
+.badge.direct { color: var(--direct); } .badge.possible { color: var(--possible); }
+.crumbs { display: inline; }
+.rel { color: var(--muted); font-size: 12px; margin: 0 .3rem; white-space: nowrap; }
+.entity { font-weight: 600; white-space: nowrap; }
+.entity.kafka_topic, .entity.table { font-style: italic; }
+.chains li { margin: .3rem 0; }
+.ev { font-size: 12px; margin-right: .2rem; }
+.none, .empty { color: var(--muted); font-style: italic; }
+details summary { cursor: pointer; }
+.context-meta, .canonical { color: var(--muted); font-size: 12px; margin: .4rem 0; }
+.canonical pre { white-space: pre-wrap; }
+footer { margin-top: 3rem; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+@media print { nav, details summary { display: none; } details { display: block; } .report-panel, header { box-shadow: none; break-inside: avoid; } }
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>archgraph analysis report <span class="badge ok">OK</span></h1>
+<p class="lede">Architecture Graph MVP 0.1.1 · analysis <code>analysis:269fa71c40422bd27a8aab0404c4a191c42be74bafdc9845ac082334332c1d0c</code> · generated from stored normalized results; opens offline, no server.</p>
+<p class="notice" role="note"><strong>How to read this:</strong> Graph reachability means review relevance, not guaranteed runtime breakage. A missing relationship is not proof of safety: unsupported, unresolved or ambiguous sites and technologies outside the supported scope can hide dependencies.</p>
+<nav><ol><li><a href="#analyzed">What was analyzed</a></li><li><a href="#facts">Architecture facts</a></li><li><a href="#relationships">Relationships</a></li><li><a href="#impact">Impact / review region</a></li><li><a href="#coverage">Coverage and limitations</a></li><li><a href="#evidence">Evidence</a></li></ol></nav>
+</header>
+<section id="analyzed" class="report-panel panel-blue">
+<h2>What was analyzed</h2>
+<p><strong>2 source repositories analyzed.</strong> Configuration inputs are listed separately below.</p>
+<div class="scroll"><table><thead><tr><th>Repository id</th><th>Label</th><th>Id source</th><th>Files scanned</th><th>Supported roots</th><th>Source digest</th></tr></thead><tbody>
+<tr><td><code>billing</code></td><td>billing</td><td>basename</td><td>2</td><td>src/main/java, src/main/resources</td><td><code title="sha256:9f7bf830d672c2da584eed657385e0ae736f54b58a965918cf2e20657c71c249">sha256:9f7bf830d672…</code></td></tr>
+<tr><td><code>orders</code></td><td>orders</td><td>basename</td><td>4</td><td>src/main/java, src/main/resources</td><td><code title="sha256:6d0a49efcbabd8918508c2dfb54e17053f46b30317910ee95bc9f68894d0d7c6">sha256:6d0a49efcbab…</code></td></tr>
+</tbody></table></div>
+<h3>Analysis configuration and input provenance</h3>
+<div class="scroll"><table><thead><tr><th>Input id</th><th>Kind</th><th>Origin</th><th>Description</th><th>Files</th><th>Stored input</th><th>Source digest</th></tr></thead><tbody>
+<tr><td><code>workspace</code></td><td>workspace_identity</td><td>generated</td><td>generated identity input: repository Spring profiles only, no Kafka or PostgreSQL identities</td><td>1</td><td>workspace-manifest.json</td><td><code title="sha256:81e6a62c9b7d61273eee5e03a1f1da2f9ba5ca5ae4723cf0bed74bc735f1d9e6">sha256:81e6a62c9b7d…</code></td></tr>
+</tbody></table></div>
+<dl class="facts"><dt>Analysis id</dt><dd><code>analysis:269fa71c40422bd27a8aab0404c4a191c42be74bafdc9845ac082334332c1d0c</code></dd><dt>Product version</dt><dd>0.1.1</dd><dt>Frozen core (Batch-7 product bundle)</dt><dd><code>sha256:8b4fd4b748bc45c19d5d1c0a099fcc537bbf8f21573874ae3b51f5501ba44ad4</code></dd><dt>Normalized result</dt><dd><code>architecture-summary.json</code> <code>sha256:f19c36415de9e73d81bb1333b84e5d3afd94d6f5a441f7d18c08577697a6068c</code></dd><dt>Environment commitment</dt><dd><code>sha256:5f9cc9ef879b3c52956c3e9a91783cfad0efb0bc28bf165d58ace63aa97ce274</code></dd><dt>Resource identities (Kafka/PostgreSQL only)</dt><dd>0 proven use(s), 0 unresolved, 0 ambiguous</dd><dt>Generic architecture coverage gaps</dt><dd>0 unsupported, 0 unresolved, 0 ambiguous</dd></dl>
+<div class="cols">
+<div><h3>Supported scope</h3><ul><li>supported Java/Spring component/constructor subset</li><li>supported Kafka producer/listener subset</li><li>supported JDBC/Flyway/PostgreSQL subset</li><li>supported configuration/resource identity</li><li>evidence-backed graph and Layer-R impact retrieval</li></ul></div>
+<div><h3>Not supported yet</h3><ul><li>JPA/Hibernate/Spring Data</li><li>REST/OpenFeign/OpenAPI</li><li>Kubernetes/Terraform/Helm</li><li>arbitrary Java call graphs</li><li>runtime service discovery</li></ul></div>
+</div>
+</section>
+<section id="facts" class="report-panel panel-green">
+<h2>Architecture facts</h2>
+<ul class="tiles">
+<li><strong>0</strong> entities<br><small>0 components · 0 Kafka topics · 0 tables</small></li>
+<li><strong>0</strong> relationships<br><small>0 cross-repository</small></li>
+<li><strong>4</strong> evidence records</li>
+<li><strong>0</strong> coverage gaps<br><small>0 unsupported · 0 unresolved · 0 ambiguous</small></li>
+</ul>
+<h3>Proven cross-repository dependencies</h3>
+<p class="empty">None proven. A missing cross-repository relationship is not proof that none exists; see Coverage and limitations.</p>
+<h3>Supported Spring components</h3>
+<p class="empty">None found in the supported scope.</p>
+<h3>Kafka topics</h3>
+<p class="empty">No Kafka topic with a proven identity was found.</p>
+<h3>PostgreSQL tables</h3>
+<p class="empty">No PostgreSQL table with a proven identity was found.</p>
+</section>
+<section id="relationships" class="report-panel panel-violet">
+<h2>Relationships</h2>
+<p>Every relationship below is an edge of the evidence-backed graph. The graph has no relationships.</p>
+
+</section>
+<section id="impact" class="report-panel panel-rose">
+<h2>Impact / review region</h2>
+<p>No impact query was run for this analysis. To see what should be reviewed when a supported file changes, run (from the release directory):</p>
+<p class="empty">No component with a relationship was found, so there is no suggested selector.</p>
+</section>
+<section id="coverage" class="report-panel panel-amber">
+<h2>Coverage and limitations</h2>
+<p>Architecture coverage: <span class="badge ok">supported</span> · not truncated · 0 unsupported · 0 unresolved · 0 ambiguous</p>
+
+<p class="notice warn"><strong>Not a safety verdict.</strong> Absence of a found edge is not evidence of safety: unsupported or unresolved sites, and technologies outside the supported scope, can hide further dependencies. Graph paths mean review relevance, not guaranteed breakage. Missing relationships must not be read as global safety.</p>
+<h3>Unresolved and ambiguous architecture sites</h3>
+<p class="empty">None reported.</p>
+<h3>Unsupported constructs and inputs</h3>
+<p class="empty">None reported.</p>
+
+<h3>Declared supported scope</h3>
+<p>Supported: supported Java/Spring component/constructor subset; supported Kafka producer/listener subset; supported JDBC/Flyway/PostgreSQL subset; supported configuration/resource identity; evidence-backed graph and Layer-R impact retrieval. Not supported yet: JPA/Hibernate/Spring Data; REST/OpenFeign/OpenAPI; Kubernetes/Terraform/Helm; arbitrary Java call graphs; runtime service discovery.</p>
+</section>
+<section id="evidence" class="report-panel panel-slate">
+<h2>Evidence</h2>
+<p>Every evidence record of the analyzed graph and of the impact paths shown above. Paths are repository-relative; excerpts are bounded source text shown as inert text. Excerpts that may contain credentials or local paths are withheld.</p>
+<div class="scroll"><table><thead><tr><th>Ref</th><th>Repository</th><th>Location</th><th>Rule / relation</th><th>Source hash</th><th>Excerpt</th></tr></thead><tbody>
+<tr id="ev-1" data-evidence="evidence:sha256:66cebc8d3b1924c55557e921b5188c11346006b55eedd9f319b15a4a28feba1c"><td><strong>E1</strong></td><td><code>billing</code></td><td><code>src/main/resources/application.properties:1</code></td><td><code>property/property_value</code></td><td><code title="sha256:83e34836af99e5016c0fa13229ccb066629c3528765f10627d4b6bab693748c5">sha256:83e34836…</code></td><td><details><summary>spring.application.name=billing</summary><p class="context-meta">Presentation context · <code>src/main/resources/application.properties:1</code> · bounded</p><pre>spring.application.name=billing</pre><div class="canonical"><strong>Canonical evidence span (unchanged):</strong><pre>spring.application.name=billing</pre></div></details></td></tr>
+<tr id="ev-2" data-evidence="evidence:sha256:adc53d8efbd175b4dec95c242949f990b4bd8bd7ed7b299b0df5a96cf70a0cb8"><td><strong>E2</strong></td><td><code>orders</code></td><td><code>src/main/java/demo/orders/Order.java:8</code></td><td><code>source/component_annotation_site</code></td><td><code title="sha256:76ba8a017c060a2bb35c2c1177daf41c710491071768e0e4f831f21a3d338655">sha256:76ba8a01…</code></td><td><details><summary>@Entity…</summary><p class="context-meta">Presentation context · <code>src/main/java/demo/orders/Order.java:6-9</code> · bounded</p><pre>@Entity
+@Table(name = &quot;orders&quot;)
+public class Order {
+}</pre><div class="canonical"><strong>Canonical evidence span (unchanged):</strong><pre>Order</pre></div></details></td></tr>
+<tr id="ev-3" data-evidence="evidence:sha256:c5c18112567d68507c04c68e98cbd548bacebe6f0c4e54009f3b20157034c05a"><td><strong>E3</strong></td><td><code>orders</code></td><td><code>src/main/java/demo/orders/OrderController.java:9</code></td><td><code>source/component_annotation_site</code></td><td><code title="sha256:ee326e6c6324fa6277bff745acc08968d161f91e40abd0935c6b265d051f8cc8">sha256:ee326e6c…</code></td><td><details><summary>@RestController…</summary><p class="context-meta">Presentation context · <code>src/main/java/demo/orders/OrderController.java:7-14</code> · bounded</p><pre>@RestController
+@RequestMapping(&quot;/orders&quot;)
+public class OrderController {
+    private final OrderRepository repository;
+
+    public OrderController(OrderRepository repository) {
+        this.repository = repository;
+    }</pre><div class="canonical"><strong>Canonical evidence span (unchanged):</strong><pre>OrderController</pre></div></details></td></tr>
+<tr id="ev-4" data-evidence="evidence:sha256:e1bdbc2a547b9e9fa99985331be5f1152a66449cc822a8d3b100ce13cdd54b26"><td><strong>E4</strong></td><td><code>orders</code></td><td><code>src/main/resources/application.properties:1</code></td><td><code>property/property_value</code></td><td><code title="sha256:b840cb4d08ecd0b7dcd7a811482bf9d6c843c3b115b9193584302d33f940796b">sha256:b840cb4d…</code></td><td><details><summary>spring.application.name=orders</summary><p class="context-meta">Presentation context · <code>src/main/resources/application.properties:1</code> · bounded</p><pre>spring.application.name=orders</pre><div class="canonical"><strong>Canonical evidence span (unchanged):</strong><pre>spring.application.name=orders</pre></div></details></td></tr>
+</tbody></table></div>
+</section>
+<footer><p>Graph reachability means review relevance, not guaranteed runtime breakage. A missing relationship is not proof of safety: unsupported, unresolved or ambiguous sites and technologies outside the supported scope can hide dependencies.</p><p>Regenerate this page from the stored results with <code>./archgraph report &lt;this directory&gt;</code>; source is not rescanned.</p></footer>
+</main>
+</body>
+</html>
