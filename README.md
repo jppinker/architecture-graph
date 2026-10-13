@@ -2,7 +2,7 @@
 
 **Understand your architecture. Before you change it.**
 
-**AI agents produce code quickly. Architecture Graph helps reviewers inspect evidence-backed dependencies and likely review impact before accepting a change.**
+**AI agents produce code at a fast pace. I made Architecture Graph that helps reviewers inspect evidence-backed dependencies and review impact before accepting a change.**
 
 ### [Try the v0.3.0-rc2 eShop demo](https://jppinker.github.io/architecture-graph/)
 
